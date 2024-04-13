@@ -4,6 +4,8 @@ from io import StringIO
 from prettytable import PrettyTable
 import pandas as pd
 import discord_notify as dn
+import bittensor.subtensor as st
+from tabulate import tabulate
 
 burn_map = {}
 my_netuids = [7, 32]
@@ -81,6 +83,44 @@ def send_report():
     data = {
         "chat_id": tele_chat_id,
         "text": text,
+        "parse_mode": "HTML"
+    }
+
+
+    requests.post(
+        f'https://api.telegram.org/bot{tele_report_token}/sendMessage',
+        json=data)
+    
+def get_emission():
+    # Create an instance of the Subtensor class
+    subtensor_instance = st(network='finney')
+    
+    # Get the metagraph information for all subnets
+    response = subtensor_instance.get_all_subnets_info()
+    
+    # Define the whitelist of netUIDs
+    whitelist_netuids = [2, 7, 31, 32]
+    
+    # Extract netuid, emission_value, and burn for each subnet in the whitelist
+    emissions_info = [
+        (
+            subnet_info.netuid,
+            subnet_info.emission_value / 10000000,  # Convert to percentage
+            subnet_info.burn
+        )
+        for subnet_info in response
+        if subnet_info.netuid in whitelist_netuids
+    ]
+    
+    # Print the emissions information for the whitelisted netUIDs
+    dataTable = []
+    for netuid, emission, burn in emissions_info:
+        dataTable.append((netuid, emission, burn))
+    headers = ['NetUID', 'Emission (%)', 'Burn']
+    table = tabulate(emissions_info, headers=headers, tablefmt='pretty')
+    data = {
+        "chat_id": tele_chat_id,
+        "text": table,
         "parse_mode": "HTML"
     }
 
