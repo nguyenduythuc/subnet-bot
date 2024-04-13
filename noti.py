@@ -5,7 +5,6 @@ from prettytable import PrettyTable
 import pandas as pd
 import discord_notify as dn
 import bittensor.subtensor as st
-from tabulate import tabulate
 
 burn_map = {}
 my_netuids = [7, 32]
@@ -113,17 +112,15 @@ def get_emission():
     ]
     
     # Print the emissions information for the whitelisted netUIDs
-    dataTable = []
+    x = PrettyTable()
+    x.field_names = ['NetUID', 'Emission (%)', 'Burn']
     for netuid, emission, burn in emissions_info:
-        dataTable.append((netuid, emission, burn))
-    headers = ['NetUID', 'Emission (%)', 'Burn']
-    table = tabulate(emissions_info, headers=headers, tablefmt='pretty')
+        x.add_row([netuid, emission, burn])
     data = {
         "chat_id": tele_chat_id,
-        "text": table,
+        "text": x.get_string(),
         "parse_mode": "HTML"
     }
-
 
     requests.post(
         f'https://api.telegram.org/bot{tele_report_token}/sendMessage',
@@ -154,6 +151,7 @@ def main():
         send_report_discord()
         # except Exception as e:
             # print(f"Error sending Discord report: {e}")
+        get_emission()
         send_report()
         print(f"Error sending Discord report")
         time.sleep(3600)
