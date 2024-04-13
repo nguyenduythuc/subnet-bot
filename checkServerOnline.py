@@ -2,21 +2,24 @@ import socket
 import requests
 import time
 import logging
+import discord_notify as dn
 
 # TODO: Update key
 TELEGRAM_BOT_TOKEN = 'xxx'
 TELEGRAM_GROUP_ID = 'xxx'
-
+notifier = dn.Notifier('xxx')
 # Configure logging
 logging.basicConfig(filename='connection_check.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def send_alert(host, port, key_name):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    text = f"CẢNH BÁO: Không thể kết nối đến miner {host}:{port} - KEY: {key_name}. Vui lòng kiểm tra!"
     payload = {
         'chat_id': TELEGRAM_GROUP_ID,
-        'text': f"CẢNH BÁO: Không thể kết nối đến miner {host}:{port} - KEY: {key_name}. Vui lòng kiểm tra!"
+        'text': text
     }
     response = requests.post(url, json=payload)
+    notifier.send(text, print_message=True)
     return response.json()
 
 def check_connection(host, port, key_name):

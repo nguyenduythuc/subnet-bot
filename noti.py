@@ -118,7 +118,7 @@ def get_emission():
         x.add_row([netuid, emission, burn])
     data = {
         "chat_id": tele_chat_id,
-        "text": x.get_string(),
+        "text": f'\nNEW ROUND: <pre>{x.get_string()}</pre>',
         "parse_mode": "HTML"
     }
 
@@ -135,7 +135,7 @@ def send_report_discord():
         if has_change:
             need_send = True
         if string != '':
-            text += f'\nNetuid: {netuid} {string}'  # Removed <pre> tags for Discord
+            text += f'\nNetuid: {netuid} ```{string}```'  # Removed <pre> tags for Discord
     text += f'\nTotal: {sum(rewards)}'
 
     data = {
