@@ -1,0 +1,7 @@
+requests==2.31.0
+discord-notify==1.0.0
+prettytable==3.10.0
+pandas==2.2.2
+pexpect==4.9.0
+bittensor==6.9.3
+lxml==5.2.1
