@@ -8,6 +8,10 @@ import discord_notify as dn
 TELEGRAM_BOT_TOKEN = 'xxx'
 TELEGRAM_GROUP_ID = 'xxx'
 notifier = dn.Notifier('xxx')
+# TODO: Update ips and ports to listen
+hosts_and_ports = [
+    ("XXX", 12345, "snX-minerX"),
+]
 # Configure logging
 logging.basicConfig(filename='connection_check.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -40,12 +44,6 @@ def check_connection(host, port, key_name):
             if attempt_count >= max_attempts:
                 send_alert(host, port, key_name)
         time.sleep(300)  # Exponential backoff: Increase delay with each attempt
-
-# List of hosts and ports to check
-# TODO: Update ip and port
-hosts_and_ports = [
-    ("x.x.x.x", 12345, "snxx-name"),
-]
 
 def main():
     # Check connection for each host and port
