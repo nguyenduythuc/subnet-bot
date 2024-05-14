@@ -10,14 +10,14 @@ burn_map = {}
 reward_map = {}
 
 # TODO: Update params
-emission_netuids = [2, 7, 31, 32]
-my_netuids = [x]
+emission_netuids = [x] # example: [2, 7, 33]
+my_netuids = [x] # example: [31, 7]
 cold_keys = [
     'x'
 ]
 follow_cold_keys = [
     'x'
-]
+] # Some one coldkey on same subnet
 tele_chat_id = 'x'
 tele_price_token = 'x'
 tele_report_token = 'x'
