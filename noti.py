@@ -7,21 +7,22 @@ import discord_notify as dn
 import bittensor.subtensor as st
 
 burn_map = {}
-my_netuids = [7, 32]
-cold_keys = [
-    'xxx'
-]
-tele_chat_id = 'xxx'
-tele_price_token = 'xxx'
-tele_report_token = 'xxx'
-notifier = dn.Notifier('xxx')
 reward_map = {}
 
-hotkeys = {
-    'hk1': 'xxx',
-    'hk2': 'xxx',
-    'hk3': 'xxx',
-}
+# TODO: Update params
+emission_netuids = [2, 7, 31, 32]
+my_netuids = [x]
+cold_keys = [
+    'x'
+]
+follow_cold_keys = [
+    'x'
+]
+tele_chat_id = 'x'
+tele_price_token = 'x'
+tele_report_token = 'x'
+notifier = dn.Notifier('x')
+# End of update area
 
 
 def get_subnet_reward(netuid, cold_keys, rewards):
@@ -78,10 +79,16 @@ def send_report():
         if string != '':
             text += f'\nNetuid: {netuid} <pre>{string}</pre>'
     text += f'\nTotal: {sum(rewards)}'
+    for netuid in my_netuids:
+        string, has_change = get_subnet_reward(netuid, follow_cold_keys, rewards)
+        if has_change:
+            need_send = True
+        if string != '':
+            text += f'\nNetuid: {netuid}* <pre>{string}</pre>'
 
     data = {
         "chat_id": tele_chat_id,
-        "text": text,
+        "text": f'\nNEW ROUND: <pre>{text}</pre>',
         "parse_mode": "HTML"
     }
 
@@ -97,9 +104,6 @@ def get_emission():
     # Get the metagraph information for all subnets
     response = subtensor_instance.get_all_subnets_info()
     
-    # Define the whitelist of netUIDs
-    whitelist_netuids = [2, 7, 31, 32]
-    
     # Extract netuid, emission_value, and burn for each subnet in the whitelist
     emissions_info = [
         (
@@ -108,7 +112,7 @@ def get_emission():
             subnet_info.burn
         )
         for subnet_info in response
-        if subnet_info.netuid in whitelist_netuids
+        if subnet_info.netuid in emission_netuids
     ]
     
     # Print the emissions information for the whitelisted netUIDs
@@ -118,7 +122,7 @@ def get_emission():
         x.add_row([netuid, emission, burn])
     data = {
         "chat_id": tele_chat_id,
-        "text": f'\nNEW ROUND: <pre>{x.get_string()}</pre>',
+        "text": f'<pre>{x.get_string()}</pre>',
         "parse_mode": "HTML"
     }
 
@@ -147,16 +151,10 @@ def send_report_discord():
 
 def main():
     while True:
-        # try:
-        send_report_discord()
-        # except Exception as e:
-            # print(f"Error sending Discord report: {e}")
+        time.sleep(3600)
         get_emission()
         send_report()
-        print(f"Error sending Discord report")
-        time.sleep(3600)
+        # send_report_discord()
 
 if __name__ == "__main__":
     main()
-
-# pm2 start python3 --name tele_noti -- ./noti.py
