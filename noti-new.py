@@ -1,11 +1,9 @@
 import requests
 import time
-from io import StringIO
 from prettytable import PrettyTable
 import pandas as pd
 import discord_notify as dn
 import bittensor.subtensor as st
-import json
 
 burn_map = {}
 reward_map = {}
@@ -87,7 +85,7 @@ def send_report():
             need_send = True
         if string != '':
             text += f'\nNetuid: {netuid} <pre>{string}</pre>'
-    text += f'\nTotal: {sum(rewards)}'
+    text += f'\nTotal: {sum(rewards)/1000000000}'
     for netuid in my_netuids:
         string, has_change = get_subnet_reward(netuid, follow_cold_keys, rewards)
         if has_change:
@@ -149,7 +147,7 @@ def send_report_discord():
             need_send = True
         if string != '':
             text += f'\nNetuid: {netuid} ```{string}```'  # Removed <pre> tags for Discord
-    text += f'\nTotal: {sum(rewards)}'
+    text += f'\nTotal: {sum(rewards)/1000000000}'
 
     data = {
         "content": text
@@ -161,8 +159,8 @@ def send_report_discord():
 def main():
     while True:
         time.sleep(3600)
-        get_emission()
         send_report()
+        get_emission()
         send_report_discord()
 
 if __name__ == "__main__":
