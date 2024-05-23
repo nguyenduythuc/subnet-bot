@@ -32,7 +32,7 @@ def get_subnet_reward(netuid, cold_keys, rewards):
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0', 'Accept': '*/*', 'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3', 'Accept-Encoding': 'gzip, deflate, br', 'Referer': 'https://x.taostats.io/', 'Content-Type': 'application/json', 'Origin': 'https://x.taostats.io', 'DNT': '1', 'Connection': 'keep-alive', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'TE': 'trailers'}
     page = 0
     nodes = []
-    while page < 3:
+    while page < 1:
         data = {"query": "query ($first: Int!, $offset: Int!, $filter: NeuronInfoFilter, $order: [NeuronInfosOrderBy!]!) { neuronInfos(first: $first, offset: $offset, filter: $filter, orderBy: $order) { nodes { coldkey dailyReward emission uid } pageInfo { endCursor hasNextPage hasPreviousPage } totalCount } }", "variables": {"offset": page * 100, "first": 256, "filter": {"netUid": {"equalTo": netuid}}, "order": "EMISSION_ASC"}}
         response = requests.post(url, headers=headers, json=data)
         response_data = response.json()
